@@ -1,0 +1,44 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: damn-api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: routes-manager
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/routes-manager/**
+          filters:
+            - name: LoggingFilter
+        - id: map-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/map-service/**
+          filters:
+            - name: LoggingFilter
+        - id: routes-provider
+          uri: http://localhost:8083/api
+          predicates:
+            - Path=/routes-provider/**
+          filters:
+            - name: LoggingFilter
+        - id: data-manager
+          uri: http://localhost:8084/api
+          predicates:
+            - Path=/data-manager/**
+          filters:
+            - name: LoggingFilter
+        - id: routes-scorer
+          uri: http://localhost:8085/api
+          predicates:
+            - Path=/routes-scorer/**
+          filters:
+            - name: LoggingFilter
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
