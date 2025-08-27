@@ -1,10 +1,11 @@
 package com.tcd.asc.damn.common.model.request;
 
-import com.tcd.asc.damn.common.entity.Location;
+import com.tcd.asc.damn.common.model.dto.Coordinates;
 import lombok.Data;
 
 @Data
 public class RouteRequest {
-    private Location startLocation;
-    private Location endLocation;
+    private Coordinates startLocation;
+    private Coordinates endLocation;
+    private UserPreferences preferences;
 }

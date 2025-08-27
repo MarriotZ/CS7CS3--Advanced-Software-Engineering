@@ -1,5 +1,6 @@
 package com.tcd.asc.damn.common.entity;
 
+import com.tcd.asc.damn.common.constants.RouteName;
 import com.tcd.asc.damn.common.constants.StationType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,9 +11,8 @@ import lombok.Data;
 public class Station {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "station_id")
-    private Long stationId;
+    private String stationId;
 
     @Column(nullable = false)
     private String name;
@@ -25,6 +25,8 @@ public class Station {
     @Column(nullable = false)
     private StationType type;
 
+    @Enumerated(EnumType.STRING)
+    private RouteName routeName;
 }
 
 

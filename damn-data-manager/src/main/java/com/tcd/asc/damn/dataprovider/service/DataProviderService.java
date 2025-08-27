@@ -2,15 +2,14 @@ package com.tcd.asc.damn.dataprovider.service;
 
 import com.tcd.asc.damn.common.constants.StationType;
 import com.tcd.asc.damn.common.entity.Location;
-import com.tcd.asc.damn.common.entity.Route;
+import com.tcd.asc.damn.common.entity.LuasRoute;
 import com.tcd.asc.damn.common.entity.Station;
-import com.tcd.asc.damn.common.repository.RouteRepository;
+import com.tcd.asc.damn.common.repository.LuasRouteRepository;
 import com.tcd.asc.damn.common.repository.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,7 +19,7 @@ public class DataProviderService {
     private StationRepository stationRepository;
 
     @Autowired
-    private RouteRepository routeRepository;
+    private LuasRouteRepository luasRouteRepository;
 
     public List<Station> getAllStations(StationType stationType) {
         return stationRepository.findByType(stationType);
@@ -30,6 +29,7 @@ public class DataProviderService {
         Station nearestStation = null;
         double shortestDistance = 100;
 
+        //The below logic will get the nearest LUAS station
         for (Station station : getAllStations(StationType.LUAS)) {
             Location stationLocation = station.getLocation();
             double distance = calculateDistance(stationLocation.getLatitude(), stationLocation.getLongitude(), location.getLatitude(), location.getLongitude());
@@ -38,7 +38,6 @@ public class DataProviderService {
                 nearestStation = station;
             }
         }
-
         return nearestStation;
     }
 
@@ -52,51 +51,57 @@ public class DataProviderService {
         return 6371.0 * c;
     }
 
+    public List<LuasRoute> getAllLuasRoutes() {
+        return luasRouteRepository.findAll();
+    }
+
     public List<String> getStationNamesBetween(Long endStationId, Long startStationId) {
         // Fetch all routes
-        List<Route> allRoutes =  routeRepository.findAll();
+        List<LuasRoute> allLuasRoutes =  luasRouteRepository.findAll();
 
         // Create a list to hold station names
         List<String> stationNames = new ArrayList<>();
         int noOfStations = 0;
         double totalDistance = 0;
 
-        // Start the traversal
-        Long currentStationId = startStationId;
-        while (currentStationId != null) {
-            // Find the next route that starts with the current station
-            Long finalCurrentStationId = currentStationId;
-            Route nextRoute = allRoutes.stream()
-                    .filter(tempRoute -> tempRoute.getStartStation().getStationId().equals(finalCurrentStationId))
-                    .findFirst()
-                    .orElse(null);
-
-            // Break if no further route is found
-            if (nextRoute == null) {
-                break;
-            }
-
-            // Add the start station name to the list
-            stationNames.add(nextRoute.getStartStation().getName());
-            noOfStations++;
-            totalDistance+=nextRoute.getDistance();
-
-            // Check if we have reached the end station
-            if (nextRoute.getEndStation().getStationId().equals(endStationId)) {
-                stationNames.add(nextRoute.getEndStation().getName());
-                noOfStations++;
-                totalDistance+=nextRoute.getDistance();
-                break;
-            }
-
-            // Move to the next station
-            currentStationId = nextRoute.getEndStation().getStationId();
-        }
-        Collections.reverse(stationNames);
-//        route.setStationsList(stationNames);
-//        route.setTravelCost(noOfStations * 0.5);
-//        route.setTravelMode(TravelMode.LUAS);
-//        route.setTravelDistance(totalDistance);
+//        // Start the traversal
+//        Long currentStationId = startStationId;
+//        while (currentStationId != null) {
+//            // Find the next route that starts with the current station
+//            Long finalCurrentStationId = currentStationId;
+//            LuasRoute nextLuasRoute = allLuasRoutes.stream()
+//                    .filter(tempLuasRoute -> tempLuasRoute.getStartStation().getStationId().equals(finalCurrentStationId))
+//                    .findFirst()
+//                    .orElse(null);
+//
+//            // Break if no further route is found
+//            if (nextLuasRoute == null) {
+//                break;
+//            }
+//
+//            // Add the start station name to the list
+//            stationNames.add(nextLuasRoute.getStartStation().getName());
+//            noOfStations++;
+//            totalDistance+= nextLuasRoute.getDistance();
+//
+//            // Check if we have reached the end station
+//            if (nextLuasRoute.getEndStation().getStationId().equals(endStationId)) {
+//                stationNames.add(nextLuasRoute.getEndStation().getName());
+//                noOfStations++;
+//                totalDistance+= nextLuasRoute.getDistance();
+//                break;
+//            }
+//
+//            // Move to the next station
+//            currentStationId = nextLuasRoute.getEndStation().getStationId();
+//        }
+//        Collections.reverse(stationNames);
+////        route.setStationsList(stationNames);
+////        route.setTravelCost(noOfStations * 0.5);
+////        route.setTravelMode(TravelMode.LUAS);
+////        route.setTravelDistance(totalDistance);
         return stationNames;
     }
+
+
 }

@@ -1,33 +1,24 @@
 package com.tcd.asc.damn.common.entity;
 
-import com.tcd.asc.damn.common.constants.TravelMode;
+import com.tcd.asc.damn.common.constants.TransitType;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "routes")
 @Data
 public class Route {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "route_id")
-    private Long routeId;
-
-    @ManyToOne
-    @JoinColumn(name = "start_station_id", referencedColumnName = "station_id", nullable = false)
-    private Station startStation;
-
-    @ManyToOne
-    @JoinColumn(name = "end_station_id", referencedColumnName = "station_id", nullable = false)
-    private Station endStation;
-
-    @Column(name = "distance_km", nullable = false)
-    private Double distance;
+    private String routeId;
+    private String agencyId;
+    private String routeShortName;
+    private String routeLongName;
+    private String routeDesc;
+    private int routeType; // GTFS route_type: 0 for Luas (tram), 3 for Bus
+    private String routeUrl;
+    private String routeColor;
+    private String routeTextColor;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "travel_mode", nullable = false)
-    private TravelMode travelMode;
+    private TransitType transitType;
 }
-
-

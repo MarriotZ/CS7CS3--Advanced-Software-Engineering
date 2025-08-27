@@ -1,3 +1,5 @@
+damn:
+  host: ${DAMN_HOST:host.docker.internal}
 server:
   port: 8080
 spring:
@@ -9,36 +11,32 @@ spring:
     gateway:
       routes:
         - id: routes-manager
-          uri: http://localhost:8081
+          uri: http://damn-route-manager:8081
           predicates:
             - Path=/api/routes-manager/**
           filters:
             - name: LoggingFilter
         - id: map-service
-          uri: http://localhost:8082
+          uri: http://damn-map-service:8082
           predicates:
             - Path=/api/map-service/**
           filters:
             - name: LoggingFilter
         - id: routes-provider
-          uri: http://localhost:8083/api
+          uri: http://damn-route-provider:8083
           predicates:
-            - Path=/routes-provider/**
+            - Path=/api/routes-provider/**
           filters:
             - name: LoggingFilter
         - id: data-manager
-          uri: http://localhost:8084/api
+          uri: http://damn-data-manager:8084
           predicates:
-            - Path=/data-manager/**
+            - Path=/api/data-manager/**
           filters:
             - name: LoggingFilter
         - id: routes-scorer
-          uri: http://localhost:8085/api
+          uri: http://damn-route-scorer:8085
           predicates:
-            - Path=/routes-scorer/**
+            - Path=/api/routes-scorer/**
           filters:
             - name: LoggingFilter
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
